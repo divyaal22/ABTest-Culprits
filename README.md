@@ -91,6 +91,30 @@ See `examples/` directory for detailed usage examples.
 pip install -r requirements.txt
 ```
 
+## ⚠️ Important: Data Preparation
+
+**The framework requires USER-LEVEL data** (one row per user with aggregated metrics).
+
+If you have **event-level data** (multiple rows per user), you MUST aggregate to user-level first:
+
+```python
+from abtest_culprits import prepare_from_events
+
+# Automatically convert event-level to user-level
+platform_data = prepare_from_events(
+    events_df,
+    user_id_column='user_id',
+    variant_column='variant',
+    metric_column='revenue',
+    platform_column='platform',
+    aggregation='sum'  # or 'mean', 'count', etc.
+)
+```
+
+**Why user-level?** Statistical tests assume independent observations. Events from the same user are correlated and violate this assumption, leading to incorrect p-values and conclusions.
+
+📖 **See `docs/DATA_PREPARATION.md` for detailed guidance and examples.**
+
 ## Quick Start
 
 ```python
